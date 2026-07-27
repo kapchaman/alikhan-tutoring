@@ -17,6 +17,7 @@ export default function AuthPage() {
   const students = useTutorStore(state => state.students);
   const tutorProfile = useTutorStore(state => state.tutorProfile);
   const activeRole = useTutorStore(state => state.activeRole);
+  const activeUserId = useTutorStore(state => state.activeUserId);
   
   const isLoaded = useTutorStore(state => state.isLoaded);
   const fetchData = useTutorStore(state => state.fetchData);
