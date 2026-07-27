@@ -91,7 +91,7 @@ export const useTutorStore = create<TutorStore>()(
       activeUserId: null,
       
       updateTutorProfile: (profile) => set({ tutorProfile: profile }),
-      setActiveUser: (role, id = null) => set({ activeRole: role, activeUserId: id }),
+      setActiveUser: (role, id) => set({ activeRole: role, activeUserId: id ?? null }),
       logout: () => set({ activeRole: null, activeUserId: null }),
       
       addStudent: (student) => set((state) => ({
