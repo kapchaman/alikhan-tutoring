@@ -14,16 +14,26 @@ export default function DashboardLayout({
   const router = useRouter();
   const activeRole = useTutorStore(state => state.activeRole);
   const tutorProfile = useTutorStore(state => state.tutorProfile);
+  const isLoaded = useTutorStore(state => state.isLoaded);
+  const fetchData = useTutorStore(state => state.fetchData);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    if (activeRole !== 'tutor' || !tutorProfile) {
-      router.push('/auth');
+    if (!isLoaded) {
+      fetchData();
     }
-  }, [activeRole, tutorProfile, router]);
+  }, [isLoaded, fetchData]);
 
-  if (!mounted || activeRole !== 'tutor' || !tutorProfile) {
+  useEffect(() => {
+    if (mounted && isLoaded) {
+      if (activeRole !== 'tutor' || !tutorProfile) {
+        router.push('/auth');
+      }
+    }
+  }, [mounted, isLoaded, activeRole, tutorProfile, router]);
+
+  if (!mounted || !isLoaded || activeRole !== 'tutor' || !tutorProfile) {
     return <div className="h-screen w-full flex items-center justify-center bg-background">Загрузка...</div>;
   }
 

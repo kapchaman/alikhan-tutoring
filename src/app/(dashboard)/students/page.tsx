@@ -44,7 +44,6 @@ export default function StudentsPage() {
       grade: newStudent.grade,
       subject: newStudent.subject,
       pricePerLesson: Number(newStudent.pricePerLesson) || 0,
-      pendingHomeworks: 0,
       avatarUrl: "",
     });
     

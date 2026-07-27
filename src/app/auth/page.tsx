@@ -18,6 +18,9 @@ export default function AuthPage() {
   const tutorProfile = useTutorStore(state => state.tutorProfile);
   const activeRole = useTutorStore(state => state.activeRole);
   
+  const isLoaded = useTutorStore(state => state.isLoaded);
+  const fetchData = useTutorStore(state => state.fetchData);
+  
   const [isMounted, setIsMounted] = useState(false);
 
   // Состояния для форм входа
@@ -35,15 +38,25 @@ export default function AuthPage() {
   
   useEffect(() => {
     setIsMounted(true);
-    // Если уже авторизован и профиль существует, перекидываем
-    if (activeRole === 'tutor' && tutorProfile) {
-      router.push('/');
-    } else if (activeRole === 'student') {
-      router.push('/student');
+    if (!isLoaded) {
+      fetchData();
     }
-  }, [activeRole, tutorProfile, router]);
+  }, [isLoaded, fetchData]);
 
-  if (!isMounted) return null;
+  useEffect(() => {
+    if (isMounted && isLoaded) {
+      // Если уже авторизован и профиль существует, перекидываем
+      if (activeRole === 'tutor' && tutorProfile) {
+        router.push('/');
+      } else if (activeRole === 'student' && activeUserId) {
+        router.push('/student');
+      }
+    }
+  }, [isMounted, isLoaded, activeRole, tutorProfile, activeUserId, router]);
+
+  if (!isMounted || !isLoaded) return <div className="h-screen w-full flex items-center justify-center bg-background">Загрузка...</div>;
+
+
 
   const handleTutorRegister = (e: React.FormEvent) => {
     e.preventDefault();

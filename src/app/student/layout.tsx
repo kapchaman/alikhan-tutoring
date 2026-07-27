@@ -23,16 +23,26 @@ export default function StudentLayout({
   
   const student = students.find(s => s.id === activeUserId);
 
+  const isLoaded = useTutorStore(state => state.isLoaded);
+  const fetchData = useTutorStore(state => state.fetchData);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    if (activeRole !== 'student' || !activeUserId) {
-      router.push('/auth');
+    if (!isLoaded) {
+      fetchData();
     }
-  }, [activeRole, activeUserId, router]);
+  }, [isLoaded, fetchData]);
 
-  if (!mounted || activeRole !== 'student' || !student) {
+  useEffect(() => {
+    if (mounted && isLoaded) {
+      if (activeRole !== 'student' || !activeUserId) {
+        router.push('/auth');
+      }
+    }
+  }, [mounted, isLoaded, activeRole, activeUserId, router]);
+
+  if (!mounted || !isLoaded || activeRole !== 'student' || !student) {
     return <div className="h-screen w-full flex items-center justify-center bg-background">Загрузка...</div>;
   }
 
