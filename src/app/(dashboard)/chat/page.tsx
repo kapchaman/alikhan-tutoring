@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTutorStore } from "@/store/tutor-store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,14 @@ export default function ChatPage() {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(students[0]?.id || null);
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const fetchMessages = useTutorStore(state => state.fetchMessages);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchMessages();
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [fetchMessages]);
 
   const filteredStudents = students.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
   

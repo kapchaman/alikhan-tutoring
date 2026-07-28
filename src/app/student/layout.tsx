@@ -6,8 +6,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Calendar, Home, MessageSquare, BookOpen, LogOut } from "lucide-react";
+import { Calendar, Home, MessageSquare, BookOpen, LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function StudentLayout({
   children,
@@ -104,10 +105,56 @@ export default function StudentLayout({
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        {/* Mobile Header (simplified) */}
+        {/* Mobile Header */}
         <header className="h-14 border-b bg-muted/40 flex items-center justify-between px-4 md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="shrink-0 md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Меню навигации</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-64 p-0">
+              <div className="h-14 border-b flex items-center px-4 font-semibold text-primary">
+                <BookOpen className="mr-2 h-5 w-5" />
+                Личный кабинет
+              </div>
+              <div className="p-4 border-b bg-background">
+                <p className="text-xs text-muted-foreground mb-1">Вы вошли как:</p>
+                <p className="font-semibold">{student.name}</p>
+                <p className="text-xs text-muted-foreground">{student.subject} • {student.grade}</p>
+              </div>
+              <nav className="flex-1 p-4 space-y-1">
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                        pathname === item.href 
+                          ? "bg-primary text-primary-foreground" 
+                          : "text-muted-foreground hover:bg-muted hover:text-primary"
+                      )}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </nav>
+              <div className="p-4 border-t absolute bottom-0 w-full">
+                <Button variant="outline" className="w-full justify-start text-muted-foreground hover:text-destructive" onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Выйти
+                </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
+          
           <div className="font-semibold text-primary flex items-center">
-            <BookOpen className="mr-2 h-5 w-5" />
+            <BookOpen className="mr-2 h-5 w-5 md:hidden" />
             Личный кабинет
           </div>
           <Button variant="ghost" size="icon" onClick={handleLogout}>

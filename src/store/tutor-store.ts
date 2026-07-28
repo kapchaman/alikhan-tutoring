@@ -59,6 +59,7 @@ interface TutorStore {
   activeUserId: string | null;
   
   fetchData: () => Promise<void>;
+  fetchMessages: () => Promise<void>;
   updateTutorProfile: (profile: TutorProfile) => Promise<void>;
   setActiveUser: (role: Role, id?: string) => void;
   logout: () => void;
@@ -91,17 +92,19 @@ export const useTutorStore = create<TutorStore>()(
       
       fetchData: async () => {
         try {
-          const [studentsRes, scheduleRes, homeworksRes, profilesRes] = await Promise.all([
+          const [studentsRes, scheduleRes, homeworksRes, profilesRes, messagesRes] = await Promise.all([
             supabase.from('students').select('*'),
             supabase.from('lessons').select('*'),
             supabase.from('homeworks').select('*'),
-            supabase.from('tutor_profiles').select('*')
+            supabase.from('tutor_profiles').select('*'),
+            supabase.from('messages').select('*')
           ]);
 
           const dbStudents = studentsRes.data || [];
           const dbSchedule = scheduleRes.data || [];
           const dbHomeworks = homeworksRes.data || [];
           const dbProfiles = profilesRes.data || [];
+          const dbMessages = messagesRes.data || [];
 
           const homeworks: Homework[] = dbHomeworks.map((h: any) => ({
             id: h.id,
@@ -137,7 +140,33 @@ export const useTutorStore = create<TutorStore>()(
             password: dbProfiles[0].password
           } : null;
 
-          set({ students, schedule, homeworks, tutorProfile: profile, isLoaded: true });
+          const messages: ChatMessage[] = dbMessages.map((m: any) => ({
+            id: m.id,
+            studentId: m.student_id,
+            senderId: m.sender_id,
+            text: m.text,
+            timestamp: new Date(m.timestamp)
+          }));
+
+          set({ students, schedule, homeworks, messages, tutorProfile: profile, isLoaded: true });
+        } catch (e) {
+          console.error(e);
+        }
+      },
+      
+      fetchMessages: async () => {
+        try {
+          const { data } = await supabase.from('messages').select('*');
+          if (data) {
+            const messages: ChatMessage[] = data.map((m: any) => ({
+              id: m.id,
+              studentId: m.student_id,
+              senderId: m.sender_id,
+              text: m.text,
+              timestamp: new Date(m.timestamp)
+            }));
+            set({ messages });
+          }
         } catch (e) {
           console.error(e);
         }
@@ -261,10 +290,24 @@ export const useTutorStore = create<TutorStore>()(
       },
       
       sendMessage: async (message) => {
-        // Для сообщений пока оставляем локально, так как мы не создавали таблицу messages
-        set((state) => ({
-          messages: [...state.messages, { ...message, id: Math.random().toString(36).substring(7), timestamp: new Date() }]
-        }));
+        const { data } = await supabase.from('messages').insert({
+          student_id: message.studentId,
+          sender_id: message.senderId,
+          text: message.text
+        }).select().single();
+        
+        if (data) {
+          const newMessage: ChatMessage = {
+            id: data.id,
+            studentId: data.student_id,
+            senderId: data.sender_id,
+            text: data.text,
+            timestamp: new Date(data.timestamp)
+          };
+          set((state) => ({
+            messages: [...state.messages, newMessage]
+          }));
+        }
       },
     }),
     {

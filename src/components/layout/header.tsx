@@ -3,6 +3,7 @@
 import { Bell, Menu, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState, useRef, useEffect } from "react";
 import { useTutorStore } from "@/store/tutor-store";
 import { useRouter } from "next/navigation";
@@ -38,10 +39,39 @@ export function Header() {
 
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6 relative">
-      <Button variant="outline" size="icon" className="shrink-0 md:hidden">
-        <Menu className="h-5 w-5" />
-        <span className="sr-only">Меню навигации</span>
-      </Button>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" size="icon" className="shrink-0 md:hidden">
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Меню навигации</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-64 p-0">
+          <div className="flex h-14 items-center border-b px-4 font-semibold text-primary">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground mr-2">
+              <span className="text-xl font-bold">A</span>
+            </div>
+            Alikhan Tutor
+          </div>
+          <nav className="flex-1 p-4 space-y-1">
+            <Link href="/" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-primary">
+              Главная
+            </Link>
+            <Link href="/schedule" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-primary">
+              Расписание
+            </Link>
+            <Link href="/students" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-primary">
+              Ученики
+            </Link>
+            <Link href="/homeworks" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-primary">
+              Задания
+            </Link>
+            <Link href="/chat" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-primary">
+              Чат
+            </Link>
+          </nav>
+        </SheetContent>
+      </Sheet>
       
       <div className="w-full flex-1">
         <form>

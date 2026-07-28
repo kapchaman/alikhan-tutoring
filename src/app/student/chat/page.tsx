@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTutorStore } from "@/store/tutor-store";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,15 @@ export default function StudentChatPage() {
   const sendMessage = useTutorStore(state => state.sendMessage);
 
   const [newMessage, setNewMessage] = useState("");
+  const fetchMessages = useTutorStore(state => state.fetchMessages);
+
+  // Poll for new messages every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchMessages();
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [fetchMessages]);
 
   if (!activeUserId) return null;
   
