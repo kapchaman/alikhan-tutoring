@@ -108,11 +108,9 @@ export default function StudentLayout({
         {/* Mobile Header */}
         <header className="h-14 border-b bg-muted/40 flex items-center justify-between px-4 md:hidden">
           <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="shrink-0 md:hidden">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Меню навигации</span>
-              </Button>
+            <SheetTrigger render={<Button variant="ghost" size="icon" className="shrink-0 md:hidden" />}>
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Меню навигации</span>
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0">
               <div className="h-14 border-b flex items-center px-4 font-semibold text-primary">

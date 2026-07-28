@@ -40,11 +40,9 @@ export function Header() {
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6 relative">
       <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="shrink-0 md:hidden">
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">Меню навигации</span>
-          </Button>
+        <SheetTrigger render={<Button variant="outline" size="icon" className="shrink-0 md:hidden" />}>
+          <Menu className="h-5 w-5" />
+          <span className="sr-only">Меню навигации</span>
         </SheetTrigger>
         <SheetContent side="left" className="w-64 p-0">
           <div className="flex h-14 items-center border-b px-4 font-semibold text-primary">
