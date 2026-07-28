@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +29,11 @@ export default function SchedulePage() {
   const deleteLesson = useTutorStore(state => state.deleteLesson);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [currentWeekStart, setCurrentWeekStart] = useState(new Date('2026-07-27T00:00:00+05:00'));
+  const [currentWeekStart, setCurrentWeekStart] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setCurrentWeekStart(startOfWeek(new Date(), { weekStartsOn: 1 }));
+  }, []);
   
   const [newLesson, setNewLesson] = useState({
     studentId: "",

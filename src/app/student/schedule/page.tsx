@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useTutorStore } from "@/store/tutor-store";
@@ -16,12 +16,16 @@ export default function StudentSchedulePage() {
   const student = students.find(s => s.id === activeUserId);
   const mySchedule = schedule.filter(s => s.studentId === activeUserId);
 
-  const [currentWeekStart, setCurrentWeekStart] = useState(new Date('2026-07-27T00:00:00+05:00'));
+  const [currentWeekStart, setCurrentWeekStart] = useState<Date | null>(null);
+  
+  useEffect(() => {
+    setCurrentWeekStart(startOfWeek(new Date(), { weekStartsOn: 1 }));
+  }, []);
 
-  if (!student) return null;
+  if (!student || !currentWeekStart) return null;
 
-  const nextWeek = () => setCurrentWeekStart(addDays(currentWeekStart, 7));
-  const prevWeek = () => setCurrentWeekStart(addDays(currentWeekStart, -7));
+  const nextWeek = () => setCurrentWeekStart(prev => prev ? addDays(prev, 7) : new Date());
+  const prevWeek = () => setCurrentWeekStart(prev => prev ? addDays(prev, -7) : new Date());
 
   // Генерируем дни недели (Пн-Вс)
   const weekDays = Array.from({ length: 7 }).map((_, i) => addDays(currentWeekStart, i));
