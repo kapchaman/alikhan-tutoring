@@ -81,8 +81,10 @@ export default function SchedulePage() {
     setNewLesson({ ...newLesson, studentId: "", isRecurring: false, weeksCount: "4" });
   };
 
-  const nextWeek = () => setCurrentWeekStart(addDays(currentWeekStart, 7));
-  const prevWeek = () => setCurrentWeekStart(addDays(currentWeekStart, -7));
+  const nextWeek = () => setCurrentWeekStart(prev => prev ? addDays(prev, 7) : new Date());
+  const prevWeek = () => setCurrentWeekStart(prev => prev ? addDays(prev, -7) : new Date());
+
+  if (!currentWeekStart) return null;
 
   // Генерируем дни недели (Пн-Вс)
   const weekDays = Array.from({ length: 7 }).map((_, i) => addDays(currentWeekStart, i));
